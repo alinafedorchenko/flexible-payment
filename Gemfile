@@ -15,6 +15,11 @@ gem "sidekiq-scheduler"
 
 group :development, :test do
   gem "debug", platforms: %i[ mri mswin mswin64 mingw x64_mingw ], require: "debug/prelude"
+end
+
+group :test do
   gem "rspec-rails"
   gem "factory_bot_rails"
+  gem "faker"
+  gem "shoulda-matchers"
 end
