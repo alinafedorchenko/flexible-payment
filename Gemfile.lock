@@ -99,6 +99,8 @@ GEM
     factory_bot_rails (6.4.3)
       factory_bot (~> 6.4)
       railties (>= 5.0.0)
+    faker (3.5.1)
+      i18n (>= 1.8.11, < 2)
     fugit (1.11.1)
       et-orbi (~> 1, >= 1.2.11)
       raabro (~> 1.4)
@@ -218,6 +220,8 @@ GEM
     rufus-scheduler (3.9.2)
       fugit (~> 1.1, >= 1.11.1)
     securerandom (0.3.1)
+    shoulda-matchers (6.2.0)
+      activesupport (>= 5.2.0)
     sidekiq (7.3.4)
       connection_pool (>= 2.3.0)
       logger
@@ -254,11 +258,13 @@ DEPENDENCIES
   debug
   dotenv-rails
   factory_bot_rails
+  faker
   pg (~> 1.1)
   puma (>= 5.0)
   rails (~> 7.2.1)
   redis
   rspec-rails
+  shoulda-matchers
   sidekiq
   sidekiq-scheduler
 
