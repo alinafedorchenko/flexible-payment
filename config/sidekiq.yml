@@ -1,0 +1,9 @@
+:queues:
+  - default
+  - high_priority
+
+:scheduler:
+  :schedule:
+    daily_disbursement_job:
+      cron: '0 5 * * *'
+      class: DailyDisbursementJob
