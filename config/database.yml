@@ -1,0 +1,24 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  # For details on connection pooling, see Rails configuration guide
+  # https://guides.rubyonrails.org/configuring.html#database-pooling
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  host: localhost
+  port: 5432
+  username: <%= ENV["FLEXIBLE_PAYMENT_DATABASE_USER"] %>
+  password: <%= ENV["FLEXIBLE_PAYMENT_DATABASE_PASSWORD"] %>
+
+development:
+  <<: *default
+  database: flexible_payment_development
+
+test:
+  <<: *default
+  database: flexible_payment_test
+
+production:
+  <<: *default
+  database: flexible_payment_production
+  username: flexible_payment
+  password: <%= ENV["FLEXIBLE_PAYMENT_DATABASE_PASSWORD"] %>
