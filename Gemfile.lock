@@ -216,6 +216,11 @@ GEM
       rspec-expectations (~> 3.13)
       rspec-mocks (~> 3.13)
       rspec-support (~> 3.13)
+    rspec-sidekiq (5.0.0)
+      rspec-core (~> 3.0)
+      rspec-expectations (~> 3.0)
+      rspec-mocks (~> 3.0)
+      sidekiq (>= 5, < 8)
     rspec-support (3.13.1)
     rufus-scheduler (3.9.2)
       fugit (~> 1.1, >= 1.11.1)
@@ -264,6 +269,7 @@ DEPENDENCIES
   rails (~> 7.2.1)
   redis
   rspec-rails
+  rspec-sidekiq
   shoulda-matchers
   sidekiq
   sidekiq-scheduler

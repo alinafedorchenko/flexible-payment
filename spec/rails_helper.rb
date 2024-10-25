@@ -1,6 +1,6 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 require 'spec_helper'
-ENV['RAILS_ENV'] ||= 'test'
+ENV['RAILS_ENV'] = 'test'
 require_relative '../config/environment'
 # Prevent database truncation if the environment is production
 abort("The Rails environment is running in production mode!") if Rails.env.production?
@@ -11,6 +11,8 @@ require 'rspec/rails'
 require 'factory_bot_rails'
 require 'shoulda/matchers'
 require 'faker'
+require 'rspec-sidekiq'
+
 # Add additional requires below this line. Rails is not loaded until this point!
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
@@ -69,6 +71,13 @@ RSpec.configure do |config|
   # config.filter_gems_from_backtrace("gem name")
   config.include ActiveSupport::Testing::TimeHelpers
   config.include FactoryBot::Syntax::Methods
+
+  Sidekiq::Testing.fake!
+  config.around(:each, perform_jobs: true) do |example|
+    Sidekiq::Testing.inline! do
+      example.run
+    end
+  end
 end
 
 Shoulda::Matchers.configure do |config|
@@ -76,4 +85,10 @@ Shoulda::Matchers.configure do |config|
     with.test_framework :rspec
     with.library :rails
   end
+end
+
+RSpec::Sidekiq.configure do |config|
+  config.clear_all_enqueued_jobs = true
+  config.enable_terminal_colours = true
+  config.warn_when_jobs_not_processed_by_sidekiq = true
 end

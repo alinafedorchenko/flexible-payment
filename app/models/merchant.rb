@@ -13,7 +13,7 @@ class Merchant < ApplicationRecord
   }, _suffix: :disbursement
 
   scope :disburse_on, ->(date) {
-    where("live_on <= :date", date: date).
+    where("live_on <= :live_on", live_on: date).
       daily_disbursement.
       or(weekly_disbursement.where("EXTRACT('DOW' FROM live_on) = :week_day", week_day: date.wday))
   }
