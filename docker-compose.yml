@@ -1,0 +1,59 @@
+version: "3.9"
+
+services:
+  db:
+    image: "postgres:latest"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    ports:
+      - 5432
+
+  redis:
+    image: "redis:6-alpine"
+    command: redis-server
+    volumes:
+      - redis:/data
+    ports:
+      - 6379
+    logging:
+      driver: none
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: base
+    command: bundle exec rails s -p 3000 -b '0.0.0.0'
+    environment:
+      DB_HOST: ${DB_HOST}
+      RAILS_ENV: ${RAILS_ENV}
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/flexible-payment
+      - bundle:/usr/local/bundle
+    depends_on:
+      - db
+      - redis
+
+  sidekiq:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: base
+    command: bundle exec sidekiq
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      DB_HOST: ${DB_HOST}
+      RAILS_ENV: ${RAILS_ENV}
+    depends_on:
+      - redis
+
+volumes:
+  postgres:
+  bundle:
+  redis:
