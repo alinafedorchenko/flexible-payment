@@ -1,5 +1,7 @@
 require 'csv'
 
+BATCH_SIZE = 1000
+
 namespace :import do
   desc "Import merchants"
   task merchants: :environment do
@@ -10,11 +12,16 @@ namespace :import do
 
     CSV.foreach(filename, headers: true, col_sep: ';') do |row|
       merchants << merchant_data(row)
+
+      if merchants.size == BATCH_SIZE
+        Merchant.import! merchants
+        merchants = []
+      end
     end
 
-    result = Merchant.import! merchants
-    p "#{result.failed_instances.size} merchant records failed to import."
-    p "#{result.ids.size} merchants were imported."
+    Merchant.import! merchants if merchants.present?
+
+    p "Merchants import finished!"
   end
 
   desc "Import orders"
@@ -26,11 +33,16 @@ namespace :import do
 
     CSV.foreach(filename, headers: true, col_sep: ';') do |row|
       orders << order_data(row)
+
+      if orders.size == BATCH_SIZE
+        Order.import! orders
+        orders = []
+      end
     end
 
-    result = Order.import! orders
-    p "#{result.failed_instances.size} order records failed to import."
-    p "#{result.ids.size} orders were imported."
+    Order.import! orders if orders.present?
+
+    p "Orders import finished!"
   end
 
   desc "import all"

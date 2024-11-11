@@ -7,14 +7,14 @@ class CreateDisbursementService
 
   def call
     ActiveRecord::Base.transaction do
-      @merchant.disbursements.create(
+      disbursement = @merchant.disbursements.create(
         amount_cents: total_net_amount + total_fee_amount,
         fee_cents: total_fee_amount,
         monthly_fee_cents: calculate_monthly_fee,
         created_at: @date
       )
-      orders.update_all(status: :paid)
-    end
+      orders.update_all(status: :paid, disbursement_id: disbursement.id)
+    end if orders.present?
 
   rescue ActiveRecord::RecordInvalid => e
     Rails.logger.error "Disbursement creation failed for merchant #{@merchant.id}: #{e.message}"
