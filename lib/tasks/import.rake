@@ -1,11 +1,13 @@
+# frozen_string_literal: true
+
 require 'csv'
 
 BATCH_SIZE = 1000
 
 namespace :import do
-  desc "Import merchants"
+  desc 'Import merchants'
   task merchants: :environment do
-    p "Merchants import started!"
+    p 'Merchants import started!'
 
     filename = Rails.root.join('lib/seeds/merchants.csv')
     merchants = []
@@ -21,12 +23,12 @@ namespace :import do
 
     Merchant.import! merchants if merchants.present?
 
-    p "Merchants import finished!"
+    p 'Merchants import finished!'
   end
 
-  desc "Import orders"
+  desc 'Import orders'
   task orders: :environment do
-    p "Orders import started!"
+    p 'Orders import started!'
 
     filename = Rails.root.join('lib/seeds/orders.csv')
     orders = []
@@ -42,10 +44,10 @@ namespace :import do
 
     Order.import! orders if orders.present?
 
-    p "Orders import finished!"
+    p 'Orders import finished!'
   end
 
-  desc "import all"
+  desc 'import all'
   task all: :environment do
     Rake::Task['import:merchants'].execute
     Rake::Task['import:orders'].execute
@@ -59,7 +61,7 @@ namespace :import do
       email: row['email'],
       live_on: Date.parse(row['live_on']),
       disbursement_frequency: row['disbursement_frequency'].downcase.to_sym,
-      minimum_monthly_fee_cents: convert_to_cents(row['minimum_monthly_fee']),
+      minimum_monthly_fee_cents: convert_to_cents(row['minimum_monthly_fee'])
     }
   end
 
@@ -76,6 +78,6 @@ namespace :import do
   end
 
   def merchants_map
-    @merchants_map ||= Merchant.all.pluck(:reference, :id).to_h
+    @merchants_map ||= Merchant.pluck(:reference, :id).to_h
   end
 end

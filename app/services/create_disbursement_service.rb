@@ -1,21 +1,23 @@
-class CreateDisbursementService
+# frozen_string_literal: true
 
+class CreateDisbursementService
   def initialize(merchant, date)
     @merchant = merchant
     @date = date
   end
 
   def call
-    ActiveRecord::Base.transaction do
-      disbursement = @merchant.disbursements.create(
-        amount_cents: total_net_amount + total_fee_amount,
-        fee_cents: total_fee_amount,
-        monthly_fee_cents: calculate_monthly_fee,
-        created_at: @date
-      )
-      orders.update_all(status: :paid, disbursement_id: disbursement.id)
-    end if orders.present?
-
+    if orders.present?
+      ActiveRecord::Base.transaction do
+        disbursement = @merchant.disbursements.create(
+          amount_cents: total_net_amount + total_fee_amount,
+          fee_cents: total_fee_amount,
+          monthly_fee_cents: calculate_monthly_fee,
+          created_at: @date
+        )
+        orders.update_all(status: :paid, disbursement_id: disbursement.id)
+      end
+    end
   rescue ActiveRecord::RecordInvalid => e
     Rails.logger.error "Disbursement creation failed for merchant #{@merchant.id}: #{e.message}"
   end
@@ -47,9 +49,7 @@ class CreateDisbursementService
     if last_disbursement && last_disbursement.created_at.month != @date.month
       last_month_disbursements_fee = @merchant.disbursements.by_month(last_disbursement.created_at).sum(:fee_cents)
 
-      if @merchant.minimum_monthly_fee_cents > last_month_disbursements_fee
-        return @merchant.minimum_monthly_fee_cents - last_month_disbursements_fee
-      end
+      return @merchant.minimum_monthly_fee_cents - last_month_disbursements_fee if @merchant.minimum_monthly_fee_cents > last_month_disbursements_fee
     end
 
     0

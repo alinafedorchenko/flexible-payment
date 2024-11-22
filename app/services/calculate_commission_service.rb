@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CalculateCommissionService
   FEE_LESS_THAN_5000 = 0.1
   FEE_BETWEEN_5000_AND_30000 = 0.95
@@ -11,7 +13,7 @@ class CalculateCommissionService
     fee_percentage = case @amount_cents
                      when 0...5000
                        FEE_LESS_THAN_5000
-                     when 5000...30000
+                     when 5000...30_000
                        FEE_BETWEEN_5000_AND_30000
                      else
                        FEE_30000_AND_ABOVE

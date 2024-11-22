@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe CreateDisbursementService do
@@ -7,9 +9,9 @@ RSpec.describe CreateDisbursementService do
   let!(:yesterday_orders) do
     create_list(:order, 3, merchant: merchant, amount_cents: 5000, created_at: Date.yesterday, status: :pending_payment)
   end
-  let!(:today_order) { create :order, created_at: Date.today, status: :pending_payment, merchant: merchant }
+  let!(:today_order) { create :order, created_at: Time.zone.today, status: :pending_payment, merchant: merchant }
   let!(:four_days_old_order) { create :order, created_at: 4.days.ago.to_date, status: :pending_payment, merchant: merchant }
-  let(:date) { Date.today }
+  let(:date) { Time.zone.today }
 
   subject { described_class.new(merchant, date) }
 
@@ -31,7 +33,7 @@ RSpec.describe CreateDisbursementService do
         # total_net_amount = 3 * 5000
         # total_fee_amount = 3 * (0.95  / 100 * 5000).round
         # amount_cents = total_net_amount + total_fee_amount
-        expect(disbursement.amount_cents).to eq(15144)
+        expect(disbursement.amount_cents).to eq(15_144)
       end
 
       context 'disbursement_frequency' do
@@ -53,7 +55,7 @@ RSpec.describe CreateDisbursementService do
           let(:date) { 1.month.ago }
 
           it 'does not create a disbursement' do
-            expect { subject.call }.not_to change { merchant.disbursements.count }
+            expect { subject.call }.not_to(change { merchant.disbursements.count })
           end
         end
 

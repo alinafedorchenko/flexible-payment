@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MerchantDailyDisbursementJob < ApplicationJob
   queue_as :default
 

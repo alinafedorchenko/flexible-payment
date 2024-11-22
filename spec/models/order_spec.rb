@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe Order, type: :model do
@@ -31,8 +33,8 @@ RSpec.describe Order, type: :model do
   describe 'scopes' do
     describe 'by_date' do
       it 'returns orders created on a specific date' do
-        order = create(:order, created_at: Date.today)
-        result = Order.by_date(Date.today)
+        order = create(:order, created_at: Time.zone.today)
+        result = Order.by_date(Time.zone.today)
 
         expect(result).to include(order)
       end
@@ -40,12 +42,11 @@ RSpec.describe Order, type: :model do
 
     describe 'by_week' do
       it 'returns orders created within the last week' do
-        order = create(:order, created_at: Date.today - 3.days)
-        result = Order.by_week(Date.today)
+        order = create(:order, created_at: Time.zone.today - 3.days)
+        result = Order.by_week(Time.zone.today)
 
         expect(result).to include(order)
       end
     end
   end
 end
-

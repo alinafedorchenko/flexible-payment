@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateDisbursements < ActiveRecord::Migration[7.2]
   def change
     create_table :disbursements, id: :uuid do |t|

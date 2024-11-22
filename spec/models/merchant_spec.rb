@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe Merchant, type: :model do
@@ -40,7 +42,7 @@ RSpec.describe Merchant, type: :model do
       context 'daily disbursements' do
         it 'returns merchants with daily disbursements' do
           daily_merchant = create(:merchant, disbursement_frequency: :daily)
-          result = Merchant.disburse_on(Date.today)
+          result = Merchant.disburse_on(Time.zone.today)
 
           expect(result).to include(daily_merchant)
         end
@@ -48,10 +50,10 @@ RSpec.describe Merchant, type: :model do
 
       context 'weekly disbursements' do
         it 'returns merchants with weekly disbursements on the same weekday as their live_on' do
-          weekly_merchant = create(:merchant, disbursement_frequency: :weekly, live_on: Date.today - 2.weeks)
-          non_matching_weekly_merchant = create(:merchant, disbursement_frequency: :weekly, live_on: Date.today - 3.days)
+          weekly_merchant = create(:merchant, disbursement_frequency: :weekly, live_on: Time.zone.today - 2.weeks)
+          non_matching_weekly_merchant = create(:merchant, disbursement_frequency: :weekly, live_on: Time.zone.today - 3.days)
 
-          result = Merchant.disburse_on(Date.today)
+          result = Merchant.disburse_on(Time.zone.today)
 
           expect(result).to include(weekly_merchant)
           expect(result).not_to include(non_matching_weekly_merchant)

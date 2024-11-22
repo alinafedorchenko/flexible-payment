@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe Disbursement, type: :model do
@@ -37,8 +39,8 @@ RSpec.describe Disbursement, type: :model do
   describe 'scopes' do
     describe 'by_month' do
       it 'returns disbursements created in a specific month' do
-        disbursement = create(:disbursement, created_at: Date.today.beginning_of_month)
-        result = Disbursement.by_month(Date.today)
+        disbursement = create(:disbursement, created_at: Time.zone.today.beginning_of_month)
+        result = Disbursement.by_month(Time.zone.today)
 
         expect(result).to include(disbursement)
       end
