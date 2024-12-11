@@ -7,7 +7,7 @@ gem 'bootsnap', require: false
 gem 'dotenv-rails'
 gem 'pg', '~> 1.1'
 gem 'puma', '>= 5.0'
-gem 'rails', '~> 7.2.1'
+gem 'rails', '~> 7.2.2'
 gem 'redis'
 gem 'sidekiq'
 gem 'sidekiq-scheduler'
